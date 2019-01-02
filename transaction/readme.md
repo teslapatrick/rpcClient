@@ -5,12 +5,12 @@
 * **Json-rpc call message: TX**
 ```go
 type Message struct {
-	To 	     *common.Address 	`json:"to"`
-	From     common.Address 	`json:"from"`
-	Value    string				`json:"value"`
-	GasLimit string				`json:"gas"`
-	GasPrice string				`json:"gasPrice"`
-	Data     []byte				`json:"data"`
+	To       *common.Address  `json:"to"`
+	From     common.Address   `json:"from"`
+	Value    string           `json:"value"`
+	GasLimit string           `json:"gas"`
+	GasPrice string           `json:"gasPrice"`
+	Data     []byte           `json:"data"`
 }
 ```
 
