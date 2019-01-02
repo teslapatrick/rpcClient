@@ -2,6 +2,15 @@
 
 > An ethereum like JSON-RPC Client
 
+* **Client struct**
+
+```go
+type Client struct {
+	rpcClient *rpc.Client
+	ethClient *ethclient.Client
+}
+```
+
 
 
 * **Connect**
