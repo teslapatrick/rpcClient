@@ -40,7 +40,7 @@ func (c *Clients) AddClient(host string) error {
 
 	// test node
 	l := len(c.clients)
-	if  ok, err := c.clients[l-1].GetNodeListening(context.TODO()); ok !=true {
+	if  _, err := c.clients[l-1].GetNodeListening(context.TODO()); err != nil {
 		return err
 	}
 
