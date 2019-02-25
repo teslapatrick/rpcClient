@@ -16,7 +16,7 @@ import (
 type Client struct {
 	rpcClient *rpc.Client
 	ethClient *ethclient.Client
-	host        string
+	host      string
 }
 
 type Clients struct {
@@ -28,12 +28,22 @@ func New() *Clients {
 }
 
 func (c *Clients) AddClient(host string) error {
+	// new rpc client
 	rpcclient, err := rpc.Dial(host)
 	if err != nil {
 		log.Error("Host connect error...", "err", err)
+		return err
 	}
+	// new eth client
 	ethclient := ethclient.NewClient(rpcclient)
 	c.clients = append(c.clients, &Client{rpcclient, ethclient, host})
+
+	// test node
+	l := len(c.clients)
+	if  ok, err := c.clients[l-1].GetNodeListening(context.TODO()); ok !=true {
+		return err
+	}
+
 	return nil
 }
 
@@ -50,7 +60,15 @@ func (c *Clients) DelClient(host string) error {
 			return nil
 		}
 	}
-	return errors.New("Could not find node.")
+	return errors.New("could not find node")
+}
+
+func (c *Clients) GetClients() map[int]string {
+	res := make(map[int]string)
+	for i, v := range c.clients {
+		res[i] = v.host
+	}
+	return res
 }
 
 func (ec *Client) GetBlockNumber(ctx context.Context) (*big.Int, error) {
