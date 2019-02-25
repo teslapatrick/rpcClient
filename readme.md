@@ -11,16 +11,42 @@ type Client struct {
 }
 ```
 
+* **Clients struct**
 
-
-* **Connect**
 ```go
-func Connect(host string) (*Client, error)
+type Clients struct {
+	clients []*Client
+}
+```
+---
+
+* **New**
+```go
+func New() *Clients
 ```
 
-​	`eg:  client, err := Connect("http://127.0.0.1:8545")`
+​	`eg:  client := New()`
 
 ---
+
+* **Add Client**
+```go
+func (c *Clients) AddClient(host string) error 
+
+eg:  
+	client := New() 
+	client.AddClient("http://127.0.0.1:8545")
+```
+
+---
+
+* **DelClient**
+```go
+func (c *Clients) DelClient(host string) error
+eg:  
+	client := New() 
+	client.DelClient("http://127.0.0.1:8545")
+```
 
 * **GetBlockNumber**
 

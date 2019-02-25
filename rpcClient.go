@@ -3,6 +3,7 @@ package rpcClient
 import (
 	"allTestProject/transaction"
 	"context"
+	"errors"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -10,21 +11,46 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rpc"
 	"math/big"
-
 )
 
 type Client struct {
 	rpcClient *rpc.Client
 	ethClient *ethclient.Client
+	host        string
 }
 
-func Connect(host string) (*Client, error) {
-	rpcClient, err := rpc.Dial(host)
+type Clients struct {
+	clients []*Client
+}
+
+func New() *Clients {
+	return &Clients{}
+}
+
+func (c *Clients) AddClient(host string) error {
+	rpcclient, err := rpc.Dial(host)
 	if err != nil {
-		log.Error("Host connect error...")
+		log.Error("Host connect error...", "err", err)
 	}
-	ethClient := ethclient.NewClient(rpcClient)
-	return &Client{rpcClient, ethClient}, err
+	ethclient := ethclient.NewClient(rpcclient)
+	c.clients = append(c.clients, &Client{rpcclient, ethclient, host})
+	return nil
+}
+
+func (c *Clients) DelClient(host string) error {
+	l := len(c.clients)
+	if l == 0 {
+		return errors.New("node length is zero")
+	}
+
+	for i, v := range c.clients {
+		if v.host == host {
+			c.clients[i] = c.clients[l-1]
+			c.clients = c.clients[:l-1]
+			return nil
+		}
+	}
+	return errors.New("Could not find node.")
 }
 
 func (ec *Client) GetBlockNumber(ctx context.Context) (*big.Int, error) {
